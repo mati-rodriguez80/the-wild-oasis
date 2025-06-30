@@ -49,21 +49,19 @@ const variations = {
 };
 
 const Button = styled.button`
-  font-size: 1.4rem;
-  padding: 1.2rem 1.6rem;
-  font-weight: 500;
   border: none;
   border-radius: var(--border-radius-sm);
-  background-color: var(--color-brand-600);
-  color: var(--color-brand-50);
   box-shadow: var(--shadow-sm);
-  cursor: pointer;
 
-  /* Similar to SCSS or Sass, we can use this "&" which will basically select the button element itself,
-  and then on there we can use the hover pseudo-class, for instance */
-  &:hover {
-    background-color: var(--color-brand-700);
-  }
+  ${(props) => sizes[props.size]}
+  ${(props) => variations[props.variation]}
 `;
 
+Button.defaultProps = {
+  variation: "primary",
+  size: "medium",
+};
+
 export default Button;
+/* Similar to SCSS or Sass, we can use this "&" which will basically select the button element itself,
+and then on there we can use the hover pseudo-class, for instance */
