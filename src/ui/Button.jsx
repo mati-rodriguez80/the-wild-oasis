@@ -20,6 +20,8 @@ const sizes = {
   `,
 };
 
+/* Similar to SCSS or Sass, we can use the "&" which will basically select the button element itself,
+and then on there we can use the hover pseudo-class, for instance. */
 const variations = {
   primary: css`
     color: var(--color-brand-50);
@@ -63,5 +65,3 @@ Button.defaultProps = {
 };
 
 export default Button;
-/* Similar to SCSS or Sass, we can use this "&" which will basically select the button element itself,
-and then on there we can use the hover pseudo-class, for instance */
