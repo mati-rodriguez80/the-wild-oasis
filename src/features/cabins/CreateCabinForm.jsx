@@ -10,7 +10,7 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -34,9 +34,23 @@ function CreateCabinForm({ cabinToEdit = {} }) {
         // to editCabin or createCabin. And also, this callback here actually gets access to the data that the mutation
         // function returns. That is, we can access the "return data" when a cabin is created or edited in apiCabins.js.
         // For example, onSuccess: (data) => console.log(data).
-        { onSuccess: () => reset() }
+        {
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
+        }
       );
-    else createCabin({ ...data, image: image }, { onSuccess: () => reset() });
+    else
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
   }
 
   function onError(errors) {
@@ -46,7 +60,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form onSubmit={handleSubmit(onSubmit, onError)} type={onCloseModal ? "modal" : "regular"}>
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -128,7 +142,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* Here "type" is an HTML attribute! And, simply works because of HTML */}
-        <Button variation="secondary" type="reset">
+        {/*
+          We don't know if this form will ever be reused in another place not inside the modal where in that case
+          it will not receive this onCloseModal prop, so that means we need to call this function conditionally.
+        */}
+        <Button variation="secondary" type="reset" onClick={() => onCloseModal?.()}>
           Cancel
         </Button>
         <Button disabled={isWorking}>{isEditSession ? "Edit cabin" : "Create new cabin"}</Button>
