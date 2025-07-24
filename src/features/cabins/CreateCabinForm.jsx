@@ -56,7 +56,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   function onError(errors) {
     // The handleSubmit function from React Hook Form will not call onSubmit if there is an error
     // in the form like validations or required fields. Instead, it will call this onError function.
-    console.log(errors);
+    // console.log(errors);
   }
 
   return (
