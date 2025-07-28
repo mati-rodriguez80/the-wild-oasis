@@ -7,6 +7,7 @@ import { useDeleteCabin } from "./useDeleteCabin";
 
 import Table from "../../ui/Table";
 import Modal from "../../ui/Modal";
+import Menus from "../../ui/Menus";
 import CreateCabinForm from "./CreateCabinForm";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { formatCurrency } from "../../utils/helpers";
@@ -40,7 +41,7 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
   const { id: cabinId, name, maxCapacity, regularPrice, discount, image, description } = cabin;
-  const { isCreating, createCabin } = useCreateCabin();
+  const { createCabin } = useCreateCabin();
   const { isDeleting, deleteCabin } = useDeleteCabin();
 
   function handleDuplicate() {
@@ -62,37 +63,41 @@ function CabinRow({ cabin }) {
       <Price>{formatCurrency(regularPrice)}</Price>
       {discount ? <Discount>{formatCurrency(discount)}</Discount> : <span>&mdash;</span>}
       <div>
-        <button onClick={handleDuplicate} disabled={isCreating}>
-          <HiSquare2Stack />
-        </button>
-
         <Modal>
-          <Modal.Open opens="edit">
-            <button>
-              <HiPencil />
-            </button>
-          </Modal.Open>
-          <Modal.Window name="edit">
-            <CreateCabinForm cabinToEdit={cabin} />
-          </Modal.Window>
+          <Menus.Menu>
+            <Menus.Toggle id={cabinId} />
 
-          {/*
-            Notice that when you delete a cabin, the modal closes as well but that is something we haven't told
-            to do anywhere. This is because when we delete the cabin, this whole TableRow component no longer exists,
-            and therefore the modal closes automatically because it is no longer rendered.
-          */}
-          <Modal.Open opens="delete">
-            <button>
-              <HiTrash />
-            </button>
-          </Modal.Open>
-          <Modal.Window name="delete">
-            <ConfirmDelete
-              resourceName="cabin"
-              onConfirm={() => deleteCabin(cabinId)}
-              disabled={isDeleting}
-            />
-          </Modal.Window>
+            <Menus.List id={cabinId}>
+              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>
+                Duplicate
+              </Menus.Button>
+
+              <Modal.Open opens="edit">
+                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+              </Modal.Open>
+
+              <Modal.Open opens="delete">
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              </Modal.Open>
+            </Menus.List>
+
+            <Modal.Window name="edit">
+              <CreateCabinForm cabinToEdit={cabin} />
+            </Modal.Window>
+
+            {/*
+              Notice that when you delete a cabin, the modal closes as well but that is something we haven't told
+              to do anywhere. This is because when we delete the cabin, this whole TableRow component no longer exists,
+              and therefore the modal closes automatically because it is no longer rendered.
+            */}
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName="cabin"
+                onConfirm={() => deleteCabin(cabinId)}
+                disabled={isDeleting}
+              />
+            </Modal.Window>
+          </Menus.Menu>
         </Modal>
       </div>
     </Table.Row>
