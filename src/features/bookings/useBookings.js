@@ -13,6 +13,11 @@ export function useBookings() {
       ? null
       : { field: "status", value: filterValue, method: "eq" };
 
+  // SORT
+  const sortByRaw = searchParams.get("sortBy") || "startDate-desc";
+  const [field, direction] = sortByRaw.split("-");
+  const sortBy = { field, direction };
+
   const {
     data: bookings,
     isLoading,
@@ -21,8 +26,8 @@ export function useBookings() {
     // Here we can add any value that we want the query to depend on here onto this array. So now, we can add
     // the filter object, and whenever the filter changes, then React Query will re-fetch the data. So, we can
     // think of this as the dependency array of useQuery.
-    queryKey: ["bookings", filter],
-    queryFn: () => getBookings({ filter }),
+    queryKey: ["bookings", filter, sortBy],
+    queryFn: () => getBookings({ filter, sortBy }),
   });
 
   return { bookings, isLoading, error };
