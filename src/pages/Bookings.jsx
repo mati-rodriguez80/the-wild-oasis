@@ -1,3 +1,4 @@
+import BookingTableOperations from "../features/bookings/BookingTableOperations";
 import BookingTable from "../features/bookings/BookingTable";
 
 import Row from "../ui/Row";
@@ -8,7 +9,7 @@ function Bookings() {
     <>
       <Row type="horizontal">
         <Heading as="h1">All bookings</Heading>
-        <p>TEST</p>
+        <BookingTableOperations />
       </Row>
 
       <BookingTable />

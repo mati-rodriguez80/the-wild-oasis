@@ -2,10 +2,15 @@ import supabase from "./supabase";
 
 import { getToday } from "../utils/helpers";
 
-export async function getBookings() {
-  const { data, error } = await supabase
-    .from("bookings")
-    .select("*, cabins(name), guests(fullName, email)");
+export async function getBookings({ filter, sortBy }) {
+  // Inside the select method, we can not only specify the fields we want to get, but also the fields from
+  // the related tables since the bookings table also has the foreign keys to the cabins and guests tables.
+  let query = supabase.from("bookings").select("*, cabins(name), guests(fullName, email)");
+
+  // FILTER
+  if (filter !== null) query = query[filter.method || "eq"](filter.field, filter.value);
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);
@@ -35,8 +40,8 @@ export async function getBookingsAfterDate(date) {
   const { data, error } = await supabase
     .from("bookings")
     .select("created_at, totalPrice, extrasPrice")
-    .gte("created_at", date)
-    .lte("created_at", getToday({ end: true }));
+    .gte("created_at", date) // gte means "greater than or equal to"
+    .lte("created_at", getToday({ end: true })); // lte means "less than or equal to"
 
   if (error) {
     console.error(error);
