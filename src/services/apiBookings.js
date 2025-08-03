@@ -1,11 +1,16 @@
 import supabase from "./supabase";
 
 import { getToday } from "../utils/helpers";
+import { PAGE_SIZE } from "../utils/constants";
 
-export async function getBookings({ filter, sortBy }) {
-  // Inside the select method, we can not only specify the fields we want to get, but also the fields from
+export async function getBookings({ filter, sortBy, page }) {
+  // Inside the select function, we can not only specify the fields we want to get, but also the fields from
   // the related tables since the bookings table also has the foreign keys to the cabins and guests tables.
-  let query = supabase.from("bookings").select("*, cabins(name), guests(fullName, email)");
+  // We can also pass in as a second argument an object with the "count" property set to "exact". This can be
+  // helpful whenever you don't want to query the entire data, but really only need the number of results.
+  let query = supabase
+    .from("bookings")
+    .select("*, cabins(name), guests(fullName, email)", { count: "exact" });
 
   // FILTER
   if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
@@ -13,14 +18,24 @@ export async function getBookings({ filter, sortBy }) {
   // SORT
   if (sortBy) query = query.order(sortBy.field, { ascending: sortBy.direction === "asc" });
 
-  const { data, error } = await query;
+  // PAGINATION
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    query = query.range(from, to);
+  }
+
+  // Since we passed in the "count" property in the select function, we will also get another property on the
+  // object called "count".
+  const { data, error, count } = await query;
 
   if (error) {
     console.error(error);
     throw new Error("Bookings could not be loaded");
   }
 
-  return data;
+  return { data, count };
 }
 
 export async function getBooking(id) {

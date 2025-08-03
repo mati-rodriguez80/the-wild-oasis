@@ -18,17 +18,22 @@ export function useBookings() {
   const [field, direction] = sortByRaw.split("-");
   const sortBy = { field, direction };
 
+  // PAGINATION
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
+
+  // When getting the "data", it was necessary to define an empty object as default value since the data is
+  // undefined first, so we were getting an error when trying to destructure `data` from it.
   const {
-    data: bookings,
+    data: { data: bookings, count } = {},
     isLoading,
     error,
   } = useQuery({
     // Here we can add any value that we want the query to depend on here onto this array. So now, we can add
     // the filter object, and whenever the filter changes, then React Query will re-fetch the data. So, we can
     // think of this as the dependency array of useQuery.
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+    queryKey: ["bookings", filter, sortBy, page],
+    queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
-  return { bookings, isLoading, error };
+  return { bookings, isLoading, error, count };
 }

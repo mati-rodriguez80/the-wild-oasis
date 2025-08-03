@@ -5,6 +5,11 @@ import SortBy from "../../ui/SortBy";
 function BookingTableOperations() {
   return (
     <TableOperations>
+      {/*
+        PENDING: Fix that when applying filters and there is a previously set "page" params in the URL,
+        we can get an error when the filtered data doesn't have the requested "page" available. For instance,
+        trying to access page number two when the new filtered data only populates one page.
+      */}
       <Filter
         filterField="status"
         options={[
