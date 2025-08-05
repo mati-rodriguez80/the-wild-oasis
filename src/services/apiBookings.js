@@ -43,7 +43,7 @@ export async function getBooking(id) {
     .from("bookings")
     .select("*, cabins(*), guests(*)")
     .eq("id", id)
-    .single();
+    .single(); // .single() is used to get a single object instead of an array
 
   if (error) {
     console.error(error);

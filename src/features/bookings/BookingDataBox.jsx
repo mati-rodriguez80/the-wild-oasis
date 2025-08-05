@@ -78,8 +78,7 @@ const Price = styled.div`
 
   background-color: ${(props) =>
     props.isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
-  color: ${(props) =>
-    props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
+  color: ${(props) => (props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)")};
 
   & p:last-child {
     text-transform: uppercase;
@@ -131,10 +130,8 @@ function BookingDataBox({ booking }) {
 
         <p>
           {format(new Date(startDate), "EEE, MMM dd yyyy")} (
-          {isToday(new Date(startDate))
-            ? "Today"
-            : formatDistanceFromNow(startDate)}
-          ) &mdash; {format(new Date(endDate), "EEE, MMM dd yyyy")}
+          {isToday(new Date(startDate)) ? "Today" : formatDistanceFromNow(startDate)}) &mdash;{" "}
+          {format(new Date(endDate), "EEE, MMM dd yyyy")}
         </p>
       </Header>
 
@@ -151,10 +148,7 @@ function BookingDataBox({ booking }) {
         </Guest>
 
         {observations && (
-          <DataItem
-            icon={<HiOutlineChatBubbleBottomCenterText />}
-            label="Observations"
-          >
+          <DataItem icon={<HiOutlineChatBubbleBottomCenterText />} label="Observations">
             {observations}
           </DataItem>
         )}
@@ -163,14 +157,19 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
+        {/*
+          PENDING: It seems that here I'm getting a Warning saying "React does not recognize the `isPaid` prop on a DOM element."
+          I think it's because I'm passing the isPaid prop to the styled component Price, and then styled-components is passing
+          it down to the div. I tried to fix it by using the transient props (prefixing the prop with $), but it didn't work
+          (Check again). I also tried to use the .attrs() method from styled-components, but it didn't work either (Check again).
+          For now, I'm ignoring the warning, but it would be nice to fix it later.
+        */}
         <Price isPaid={isPaid}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
-              )} breakfast)`}
+              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(extrasPrice)} breakfast)`}
           </DataItem>
 
           <p>{isPaid ? "Paid" : "Will pay at property"}</p>
