@@ -86,7 +86,7 @@ function Menus({ children }) {
 function Toggle({ id }) {
   const { openId, open, close, setPosition } = useContext(MenusContext);
 
-  // Pending: Fix that openId is always an empty string within this function, and so the menu doesn't close
+  // PENDING: Fix that openId is always an empty string within this function, and so the menu doesn't close
   // when the same button is clicked again.
   function handleClick(e) {
     const rect = e.target.closest("button").getBoundingClientRect();
@@ -109,7 +109,7 @@ function Toggle({ id }) {
   );
 }
 
-// Pending: Fix menu fixed position when it is opened in a table row that is scrolled out of view
+// PENDING: Fix menu fixed position when it is opened in a table row that is scrolled out of view
 // since the menu stays fixed to the viewport, not the row.
 function List({ id, children }) {
   const { openId, close, position } = useContext(MenusContext);

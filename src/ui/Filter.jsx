@@ -42,6 +42,12 @@ function Filter({ filterField, options }) {
 
   function handleClick(value) {
     searchParams.set(filterField, value);
+
+    // Fix that when applying filters and there is a previously set "page" params in the URL,
+    // we can get an error when the filtered data doesn't have the requested "page" available. For instance,
+    // trying to access page number two when the new filtered data only populates one page.
+    if (searchParams.get("page")) searchParams.set("page", 1);
+
     setSearchParams(searchParams);
   }
 
