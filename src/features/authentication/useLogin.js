@@ -8,7 +8,7 @@ export function useLogin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { mutate: login, isPending: isLogging } = useMutation({
+  const { mutate: login, isPending: isLoggingIn } = useMutation({
     mutationFn: ({ email, password }) => loginApi({ email, password }),
     onSuccess: (data) => {
       // Once we logged in, then the user is being redirected to the dashboard where we are getting the user again
@@ -17,8 +17,8 @@ export function useLogin() {
       // This way the login will be a little bit quicker. So, we take the newly logged in user and manually add them
       // to the React Query cache, and then in the useUser hook used by ProtectedRoute that uses the same queryKey
       // will allow React Query to take the user from the cache.
-      queryClient.setQueriesData(["user"], data.user);
-      navigate("/dashboard");
+      queryClient.setQueryData(["user"], data.user);
+      navigate("/dashboard", { replace: true });
     },
     onError: (error) => {
       console.log("ERROR", error);
@@ -26,5 +26,5 @@ export function useLogin() {
     },
   });
 
-  return { login, isLogging };
+  return { login, isLoggingIn };
 }

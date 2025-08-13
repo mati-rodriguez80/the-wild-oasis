@@ -11,7 +11,7 @@ import SpinnerMini from "../../ui/SpinnerMini";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLogging } = useLogin();
+  const { login, isLoggingIn } = useLogin();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -39,7 +39,7 @@ function LoginForm() {
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          disabled={isLogging}
+          disabled={isLoggingIn}
         />
       </FormRowVertical>
       <FormRowVertical label="Password">
@@ -49,12 +49,12 @@ function LoginForm() {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          disabled={isLogging}
+          disabled={isLoggingIn}
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLogging}>
-          {!isLogging ? "Log in" : <SpinnerMini />}
+        <Button size="large" disabled={isLoggingIn}>
+          {!isLoggingIn ? "Log in" : <SpinnerMini />}
         </Button>
       </FormRowVertical>
     </Form>
