@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+import GlobalStyles from "../styles/GlobalStyles";
+
+import Heading from "./Heading";
+import Button from "./Button";
+
 const StyledErrorFallback = styled.main`
   height: 100vh;
   background-color: var(--color-grey-50);
@@ -29,3 +34,26 @@ const Box = styled.div`
     color: var(--color-grey-500);
   }
 `;
+
+// These error boundaries really only catch errors while React is rendering. So, bugs that occur on some
+// event handlers or in an effect or some asynchronous code won't be caught by this error boundary. But,
+// for those we many times have some other mechanisms like, for example, those errors that are usually
+// returned from useQuery.
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <>
+      <GlobalStyles />
+      <StyledErrorFallback>
+        <Box>
+          <Heading as="h1">Something went wrong 🧐</Heading>
+          <p>{error.message}</p>
+          <Button size="large" onClick={resetErrorBoundary}>
+            Try again
+          </Button>
+        </Box>
+      </StyledErrorFallback>
+    </>
+  );
+}
+
+export default ErrorFallback;
