@@ -86,9 +86,9 @@ function Menus({ children }) {
 function Toggle({ id }) {
   const { openId, open, close, setPosition } = useContext(MenusContext);
 
-  // PENDING: Fix that openId is always an empty string within this function, and so the menu doesn't close
-  // when the same button is clicked again.
   function handleClick(e) {
+    // Fix that menu didn't close when the same button is clicked again.
+    e.stopPropagation();
     const rect = e.target.closest("button").getBoundingClientRect();
 
     setPosition({
@@ -113,7 +113,12 @@ function Toggle({ id }) {
 // since the menu stays fixed to the viewport, not the row.
 function List({ id, children }) {
   const { openId, close, position } = useContext(MenusContext);
-  const ref = useOutsideClick(close);
+  // Fix that menu didn't close when the same button is clicked again.
+  // First, before this fix, when we clicked the button, the menu closed for the click outside and inmediately opened again.
+  // So, we pass in false to not listen in the capturing phase, so the click event reaches the button first and not the document.
+  // This alone still didn't fix the problem since now the menu opens and closes inmediately, so we need to stop the propagation
+  // of the click event in the button's onClick handler.
+  const ref = useOutsideClick(close, false);
 
   if (openId !== id) return null;
 
